@@ -9,8 +9,8 @@ APP <-> WsGateway: websocket ping/pong 心跳 3s一次
 
 alt 链接事件
 note over WsGateway: 链接事件
-WsGateway -> Kafka: 广播链接上线事件 {clientId,userId,userType}
-Kafka ->> Business: 触发初始化链接消息
+WsGateway -> RedisSteam: 广播链接上线事件 {clientId,userId,userType}
+RedisSteam ->> Business: 触发初始化链接消息
 Business ->> WsGateway: 发送初始化链接消息
 WsGateway ->> APP: 推送消息到客户端
 APP --> APP: 业务逻辑
@@ -20,8 +20,8 @@ note over APP: 组消息
 APP ->> WsGateway: 绑定组 接收组消息
 
 alt 绑定组事件
-{start} WsGateway ->> Kafka: 广播链接绑定组消息 {clientId,userId,userType,groupId}
-Kafka ->> Business: 触发初始化链接消息
+{start} WsGateway ->> RedisSteam: 广播链接绑定组消息 {clientId,userId,userType,groupId}
+RedisSteam ->> Business: 触发初始化链接消息
 Business ->> WsGateway: 给链接推送初始化消息
 {end} WsGateway ->> APP: 发送初始化链接消息
 end

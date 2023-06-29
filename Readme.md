@@ -25,4 +25,4 @@ a golang websocket gateway
 > nginx/ingress must set proxy-read-timeout and proxy-send-timeout to up to 300s
 
 ## Process
-![img_1.png](img_1.png)
+![img_2.png](img_2.png)
