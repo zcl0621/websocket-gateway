@@ -1,0 +1,57 @@
+@startuml
+
+note over APP: 创建链接
+APP o<->o WsGateway: 创建并保持 websocket 链接
+APP -> WsGateway: token 或者 anonymousToken 校验
+WsGateway -> APP: 发送 clientInfo {clientId}
+
+APP <-> WsGateway: websocket ping/pong 心跳 3s一次
+
+alt 链接事件
+note over WsGateway: 链接事件
+WsGateway -> Kafka: 广播链接上线事件 {clientId,userId,userType}
+Kafka ->> Business: 触发初始化链接消息
+Business ->> WsGateway: 发送初始化链接消息
+WsGateway ->> APP: 推送消息到客户端
+APP --> APP: 业务逻辑
+end
+
+note over APP: 组消息
+APP ->> WsGateway: 绑定组 接收组消息
+
+alt 绑定组事件
+{start} WsGateway ->> Kafka: 广播链接绑定组消息 {clientId,userId,userType,groupId}
+Kafka ->> Business: 触发初始化链接消息
+Business ->> WsGateway: 给链接推送初始化消息
+{end} WsGateway ->> APP: 发送初始化链接消息
+end
+
+alt APP订阅组消息
+{start} Business ->> WsGateway: 发送消息到组
+    {start} WsGateway ->o Redis: 组消息发布到channel 暂存组消息和下标进redis
+    {end} Redis ->o WsGateway: WsGateway 订阅 channel
+    WsGateway ->> WsGateway: 查找组内所有客户端
+{end} WsGateway ->> APP: 推送消息到客户端
+APP --> APP: 业务逻辑
+end
+
+alt APP注销订阅组消息
+APP ->> WsGateway: 取消订阅组消息
+end
+
+note over APP: 获取指定下标的组消息
+{start} APP -> WsGateway: 通过组id和下标 获取遗漏或者未收到组消息
+    WsGateway ->o Redis: 从redis获取组消息
+    WsGateway -> APP: 返回组消息
+{end}  APP --> APP: 业务逻辑
+
+note over APP: 指定用户推送消息
+Business ->> WsGateway: 发送消息到用户 一个用户多个链接 每个链接都会收到消息
+WsGateway -> APP: 推送消息
+APP --> APP: 业务逻辑
+
+note over APP: 指定链接推送消息
+Business ->> WsGateway: 发送消息到链接 {clientId}
+WsGateway -> APP: 推送消息
+APP --> APP: 业务逻辑
+@enduml

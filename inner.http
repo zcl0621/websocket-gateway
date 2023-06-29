@@ -1,0 +1,7 @@
+POST http://127.0.0.1:8080/api/inner/ws-gateway-service/group-publish
+Content-Type: application/json
+
+{
+  "group_id": "test_2",
+  "message": "{\"name\":\"test\",\"group_id\":\"test_2\"}"
+}

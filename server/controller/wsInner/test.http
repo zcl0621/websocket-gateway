@@ -1,0 +1,26 @@
+### group publish
+POST http://127.0.0.1:8080/api/inner/ws-holder/publish
+Content-Type: application/json
+
+{
+  "group_id": "999",
+  "message": "{\"data\":9999,\"bbb\":\"123123zsxc123123123\"}"
+}
+
+### user publish
+POST http://127.0.0.1:8080/api/inner/ws-gateway-service/user-publish
+Content-Type: application/json
+
+{
+  "user_id": "1111",
+  "message": "{\"data\":9999,\"bbb\":\"123123zsxc123123123\"}"
+}
+
+### group index msg
+POST https://smartboard-demo.estar-go.com/api/public/ws-gateway-service/group/msg/index
+Content-Type: application/json
+
+{
+"index":7,
+"group_id": "game:215912"
+}

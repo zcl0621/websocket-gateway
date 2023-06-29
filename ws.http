@@ -1,0 +1,3 @@
+### app
+WEBSOCKET ws://127.0.0.1:8082/api/public/ws-gateway-service/app/ws?user_id=1
+Content-Type: application/json // We use it for highlighting
